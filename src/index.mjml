@@ -1,0 +1,14 @@
+<mjml owa="desktop" lang="en">
+  <mj-body>
+    <mj-section>
+      <mj-column>
+        <mj-text>
+          {{title}}
+        </mj-text>
+        <mj-text>
+          {{content}}
+        </mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>
