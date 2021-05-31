@@ -55,7 +55,7 @@ You can create a `.env` file in the root of the project for ease of configuratio
 
 ```
 # Store your environment variables here
-
+MJ_PROJECT=Sample
 MJ_APIKEY_PUBLIC=xxxxxxxxxxxxxxx
 MJ_APIKEY_PRIVATE=xxxxxxxxxxxxx
 MJ_SENDER=youraccount@alpenite.com
@@ -63,6 +63,7 @@ MJ_RECIPIENT=youraccount@alpenite.com
 
 ```
 
+- **MJ_PROJECT**: Mailjet Current Project Name
 - **MJ_APIKEY_PUBLIC**: Mailjet Public Key
 - **MJ_APIKEY_PRIVATE**: Mailjet Private Key
 - **MJ_SENDER**: Mailjet Sender (this must be set in the [sender section](https://app.mailjet.com/account/sender) of your Mailjet dashboard)
