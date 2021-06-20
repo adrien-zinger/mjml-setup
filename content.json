@@ -1,8 +1,22 @@
 {
-  "fr": {
-    "index": {
-      "placeholder-title": "En francais",
-      "placeholder-content": "Bonjour le monde !"
+  "index": {
+    "fr": {
+        "title": "test 1",
+        "content": "Bonjour le monde !"
+    },
+    "en": {
+      "title": "test 1",
+      "content": "Hello world !"
+    }
+  },
+  "index2": {
+    "fr": {
+        "title": "test 2",
+        "content": "Bonjour le monde !"
+    },
+    "en": {
+      "title": "test 2",
+      "content": "Hello world !"
     }
   }
 }

@@ -1,4 +1,4 @@
-import { src, dest, watch, parallel, series, task } from 'gulp';
+import { src, dest, watch, parallel, series } from 'gulp';
 import mjml from 'gulp-mjml';
 import handlebars from 'gulp-compile-handlebars';
 import fs from 'fs';
@@ -8,85 +8,73 @@ const mjmlEngine = require('mjml');
 const browserSync = require('browser-sync').create();
 const tap = require('gulp-tap');
 
-let data;
-
-function setup () {
-    data = JSON.parse(fs.readFileSync('./placeholder.json', 'utf8'))
-    return Promise.resolve();
+function handlebar_gen () {
+    return src('./src/*.mjml')
+        .pipe(mjml(mjmlEngine, {validationLevel: 'strict'}))
+        .pipe(dest('./build/hb/'));
 }
 
-// TODO import this section from my github package in dependencies
-// Section start
-//Delimiters like {? variable ?}
-const options = {
-    openDelimiter: "{",
-    closeDelimiter: "}",
-    delimiter: "?"
-};
-
-/**
- * Return a promise rendering template from path
- * @param {string} path ejs template path file
- * @returns {Promise}
- */
-function rf(path, variables) {
-    if (!path) return Promise.reject(Error("Renderer need a path"))
-        return new Promise((resolve, reject) => {
-            return renderFile(
-            path,
-            variables,
-            options,
-            (err, html) => {
-                if (err) return reject(err)
-                return resolve({ html, variables })
-            })
-    })
-}
-// Section end
-
-
-function fillContent () {
-    content = JSON.parse(fs.readFileSync('./content.json', 'utf8'))
-    return src('build/placeholder/*.html')
-        .pipe(tap(file => {
-            console.log('file', file)
-            // for each language, if content[lang] contain filename, build
-            for (const lang of Object.keys(content)) {
-
-                Object.keys(content[lang]).indexOf(file)
-            }
-            //rf(file, )
-        }));
+function set_content (done) {
+    const content = JSON.parse(fs.readFileSync('./content.json', 'utf8'));
+    if (!content) return Promise.reject(new Error('No local data available.'));
+    const tasks = fs.readdirSync('./build/hb').map(file => {
+        return getTasksByCountryAndFileName(
+            content[file.replace('.html', '')], file);
+    }).flat();
+    return parallel(...tasks, (parallelDone) => {
+        parallelDone();
+        done();
+    })();
 }
 
-const fr = () => template_gen('fr');
-const en = () => template_gen('en');
-const placeholder = () => template_gen('placeholder');
-
-function template_gen (local) {
-    if (!data) {
-        return Promise.reject(new Error('No local data available.'));
-    }
-    const viewdata = data[local];
-    return src('./src/index.mjml')
-        .pipe(tap(file => {
-            const filename = path.basename(file.path).replace('.mjml', '');
-            viewdata.filename = filename;
-            viewdata.lang = local;
-        }))
-        .pipe(mjml(mjmlEngine, {validationLevel: 'strict'})) //todo minify
-        .pipe(handlebars(viewdata))
-        .pipe(dest('./build/' + local));
+function getTasksByCountryAndFileName (data, filename) {
+    if (!data) return Promise.reject(new Error('No local data available.'));
+    return Object.keys(data).map((country) => {
+        function genbyCountry() {
+            const viewdata = data[country];
+            return src(`./build/hb/${filename}`)
+                .pipe(tap(file => {
+                    const name = path.basename(file.path).replace('.html', '');
+                    viewdata.filename = name;
+                    viewdata.lang = country;
+                }))
+                .pipe(handlebars(viewdata))
+                .pipe(dest('./dist/' + country));
+        }
+        genbyCountry.displayName = `dist_${filename}_${country}`;
+        return genbyCountry;
+    });
 }
 
-function cleanup () {
-    return Promise.resolve(() => data = null);
+function template_gen (done) {
+    const data = JSON.parse(fs.readFileSync('./placeholder.json', 'utf8'));
+    if (!data) return Promise.reject(new Error('No local data available.'));
+    const tasks = Object.keys(data).map((country) => {
+        function genbyCountry() {
+            const viewdata = data[country];
+            return src('./src/*.mjml')
+                .pipe(tap(file => {
+                    const name = path.basename(file.path).replace('.mjml', '');
+                    viewdata.filename = name;
+                    viewdata.lang = country;
+                }))
+                .pipe(mjml(mjmlEngine, {validationLevel: 'strict'}))
+                .pipe(handlebars(viewdata))
+                .pipe(dest('./build/templates/' + country));
+        }
+        genbyCountry.displayName = `build_${country}`;
+        return genbyCountry;
+    });
+    return parallel(...tasks, (parallelDone) => {
+        parallelDone();
+        done();
+    })();
 }
 
-const main = series(setup, parallel(fr, en), cleanup);
-const email = series(setup, placeholder, fillContent, cleanup);
+const main = series(template_gen);
+const dist = series(handlebar_gen, set_content);
 
-export {main as build, email};
+export {main as build, dist};
 export default function () {
     main();
     browserSync.init({
@@ -100,4 +88,4 @@ export default function () {
         browserSync.reload();
         done();
     });
-};
+}

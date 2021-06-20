@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node_modules/.bin/gulp",
     "build": "node_modules/.bin/gulp build",
+    "dist": "node_modules/.bin/gulp dist",
     "send": "node test/send.js"
   },
   "author": "",
@@ -31,5 +32,6 @@
     "mjml-head-attributes": "^4.9.3",
     "node-mailjet": "^3.3.4",
     "yargs": "^17.0.1"
-  }
+  },
+  "dependencies": {}
 }

@@ -6,9 +6,5 @@
   "fr": {
     "title": "En francais",
     "content": "Bonjour le monde !"
-  },
-  "placeholder": {
-    "title": "{? placeholder-title }",
-    "content": "{? placeholder-content }"
   }
 }

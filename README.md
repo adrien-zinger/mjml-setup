@@ -9,10 +9,14 @@ With npm: `npm install`
 
 ###  Script
 
-1. Run `yarn build` to build all compiled HTML files
-2. Run `yarn start` to watch for changes on MJML files. A browser window should open with a dev server and auto reload.
-3. Run `yarn gen` to build emails
+1. Run `yarn build` to build all templates compiled HTML files
+2. Run `yarn start` to watch for changes on MJML files for development. A browser window should open with a dev server and auto reload.
+3. Run `yarn dist` to build final emails in the dist folder
 
+### Json files
+
+**placeholder.json** Test template contents replace all components
+**content.json** For each generated file replace content
 ### MJML
 
 The [mjml](https://mjml.io/documentation/) sources code should always be in the src folder. You can as well modify the gulpfile to specify differents targets.
