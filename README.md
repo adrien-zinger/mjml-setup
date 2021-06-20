@@ -16,6 +16,7 @@ With npm: `npm install`
 ### Json files
 
 **placeholder.json** Test template contents replace all components
+
 **content.json** For each generated file replace content
 ### MJML
 
