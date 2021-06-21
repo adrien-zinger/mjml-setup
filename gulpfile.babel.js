@@ -17,7 +17,9 @@ function handlebar_gen () {
 function set_content (done) {
     const content = JSON.parse(fs.readFileSync('./content.json', 'utf8'));
     if (!content) return Promise.reject(new Error('No local data available.'));
-    const tasks = fs.readdirSync('./build/hb').map(file => {
+    const tasks = fs.readdirSync('./build/hb').filter(file => {
+        return content[file.replace('.html', '')] !== undefined;
+    }).map(file => {
         return getTasksByCountryAndFileName(
             content[file.replace('.html', '')], file);
     }).flat();
