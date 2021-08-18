@@ -1,10 +1,6 @@
 {
-  "en": {
+  "placeholder": {
     "title": "In english",
     "content": "Hello world!"
-  },
-  "fr": {
-    "title": "En francais",
-    "content": "Bonjour le monde !"
   }
 }

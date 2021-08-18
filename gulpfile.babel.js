@@ -78,15 +78,17 @@ const dist = series(handlebar_gen, set_content);
 
 export {main as build, dist};
 export default function () {
+    var argv = require('yargs').argv;
     main();
     browserSync.init({
         server: {
-            baseDir: './build/en'
+            baseDir: './build/templates/placeholder',
+            index: `${argv.t}.html`
         }
     });
     watch('./src/*.mjml', main);
     watch('./locals.json', main);
-    watch('./build/**/*.html', done => {
+    watch('./build/template/**/*.html', done => {
         browserSync.reload();
         done();
     });
